@@ -1,0 +1,49 @@
+---
+- hosts: proxy
+  vars_files:
+    - vars.yml
+  tasks:
+
+    - name: Install Apache web server and modules
+      apt: pkg={{item}} state=installed update_cache=true
+      with_items:
+        - apache2
+        - libapache2-mod-proxy-html
+      sudo: yes
+
+    - name: Enable apache proxy modules
+      shell: a2enmod {{item}}
+      with_items:
+        - proxy
+        - proxy_ajp
+        - proxy_http
+        - rewrite
+        - deflate
+        - headers
+        - proxy_balancer
+        - proxy_connect
+        - proxy_html
+      sudo: yes
+      notify:
+        - restart apache2
+
+    - name: create virtual host file
+      template: src=templates/virtualhost.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
+      sudo: yes
+
+    - name: a2ensite {{ proxy_vhost }}
+      command: a2ensite {{ proxy_vhost }}
+      sudo: yes
+      notify:
+        - restart apache2
+
+    - name: a2dissite 000-default
+      command: a2dissite 000-default
+      sudo: yes
+      notify:
+        - restart apache2
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
+    
