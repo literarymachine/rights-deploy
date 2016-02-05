@@ -1,9 +1,9 @@
 [app]
-rights-prod.rightsstatements.org
+rights-stg.rightsstatements.org
 
 [site]
-rights-prod.rightsstatements.org
+rights-stg.rightsstatements.org
 
 [proxy]
-rights-prod.rightsstatements.org
+rights-stg.rightsstatements.org
 
