@@ -3,14 +3,10 @@ home: "{{ ansible_env.HOME }}"
 
 proxy_vhost: rights-app
 
+rights_app_server: localhost
 rights_app_port: 9000
 rights_app_repo_url: https://github.com/literarymachine/rights-app-1
 rights_app_release: latest
 rights_app_dest: "{{ home }}"
 
-site_repo_url: https://github.com/literarymachine/jekyll-bare.git
-site_repo_remote: origin
-site_repo_version: master
-site_port: 4000
-site_dest: "{{ home }}/site"
-site_base: /site
+rights_site_server: literarymachine.github.io
