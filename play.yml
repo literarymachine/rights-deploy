@@ -3,10 +3,6 @@
   vars_files:
     - vars.yml
   tasks:
-    - name: Install the Git package
-      apt: pkg=git state=installed
-      sudo: yes
-
     - name: Install Oracle Java Repo Installer Repository
       apt_repository: repo=ppa:webupd8team/java update-cache=yes 
       sudo: yes
@@ -21,36 +17,38 @@
       apt: pkg=oracle-java8-installer state=installed
       sudo: yes
 
-    - name: Add sbt repository key
-      apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x642AC823 state=present
+    - name: Install unzip
+      apt: pkg=unzip state=installed
       sudo: yes
 
-    - name: Install sbt repository
-      apt_repository: repo='deb https://dl.bintray.com/sbt/debian /' state=present update-cache=yes
-      sudo: yes
+    - name: Find latest release
+      shell: >
+        curl -s -L -H 'Accept: application/json' {{ rights_app_repo_url }}/releases/latest | grep -Po '"tag_name":"\K[^"]*'
+      when: rights_app_release == "latest"
+      register: latest
+      ignore_errors: True
 
-    - name: Install sbt
-      apt: pkg=sbt state=installed
-      sudo: yes
+    - name: Download latest rights-app release
+      get_url: url={{ rights_app_repo_url }}/releases/download/{{ latest.stdout }}/rights-app-dist.zip dest={{ rights_app_dest }}
+      when: latest.rc == 0
 
-    - name: Checkout project from Git
-      git: repo={{ rights_app_repo_url }} dest={{ rights_app_dest }} remote={{ rights_app_repo_remote }} version={{ rights_app_repo_version }} update=yes
-      register: gitclone
+    - name: Download rights-app release
+      get_url: url={{ rights_app_repo_url }}/releases/download/{{ rights_app_release }}/rights-app-dist.zip dest={{ rights_app_dest }}
+      when: latest is undefined
 
-    - name: Build rights-app
-      shell: cd "{{ rights_app_dest }}" && sbt clean stage
-      when: gitclone.changed
+    - name: Extract rights-app
+      shell: cd "{{ rights_app_dest }}" && unzip -o rights-app-dist.zip
 
-    - stat: path={{ rights_app_dest }}/target/universal/stage/RUNNING_PID
+    - stat: path={{ rights_app_dest }}/rights-app-dist/RUNNING_PID
       register: pid
 
     - name: Stop rights-app
-      shell: cat "{{ rights_app_dest }}/target/universal/stage/RUNNING_PID" | xargs kill
+      shell: cat "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID" | xargs kill
       when: pid.stat.exists
 
     - name: Start rights-app
-      shell: cd "{{ rights_app_dest }}" && screen -S rights-app -d -m target/universal/stage/bin/rights-app -Dhttp.port={{ rights_app_port }}
+      shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }}
 
     - name: Wait for rights-app
-      wait_for: port={{ rights_app_port }} delay=20
+      wait_for: port={{ rights_app_port }} delay=5
 

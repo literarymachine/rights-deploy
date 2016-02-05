@@ -4,10 +4,9 @@ home: "{{ ansible_env.HOME }}"
 proxy_vhost: rights-app
 
 rights_app_port: 9000
-rights_app_repo_url: https://github.com/rightsstatements/rights-app.git
-rights_app_repo_remote: origin
-rights_app_repo_version: master
-rights_app_dest: "{{ home }}/rights-app"
+rights_app_repo_url: https://github.com/literarymachine/rights-app-1
+rights_app_release: latest
+rights_app_dest: "{{ home }}"
 
 site_repo_url: https://github.com/literarymachine/jekyll-bare.git
 site_repo_remote: origin
