@@ -1,9 +1,21 @@
 [app]
 rights-stg.rightsstatements.org
 
+[app:vars]
+rights_app_server=localhost
+rights_app_port=9000
+rights_app_repo_url=https://github.com/literarymachine/rights-app-1
+rights_app_release=latest
+rights_app_dest="{{ ansible_env.HOME }}"
+
 [site]
 rights-stg.rightsstatements.org
+
+[site:vars]
+rights_site_server=literarymachine.github.io
 
 [proxy]
 rights-stg.rightsstatements.org
 
+[proxy:vars]
+proxy_vhost=rights-app

@@ -1,12 +1,4 @@
 ---
-home: "{{ ansible_env.HOME }}"
+server_proxy_host: proxy.lc1.conostix.com
+server_proxy_port: 3128
 
-proxy_vhost: rights-app
-
-rights_app_server: localhost
-rights_app_port: 9000
-rights_app_repo_url: https://github.com/literarymachine/rights-app-1
-rights_app_release: latest
-rights_app_dest: "{{ home }}"
-
-rights_site_server: literarymachine.github.io

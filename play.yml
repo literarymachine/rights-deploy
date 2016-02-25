@@ -5,6 +5,9 @@
   tasks:
     - name: Install Oracle Java Repo Installer Repository
       apt_repository: repo=ppa:webupd8team/java update-cache=yes 
+      environment:
+        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
       sudo: yes
       register: javarepo
 
@@ -15,6 +18,9 @@
   
     - name: Install Oracle Java 8
       apt: pkg=oracle-java8-installer state=installed
+      environment:
+        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
       sudo: yes
 
     - name: Install unzip
@@ -23,17 +29,23 @@
 
     - name: Find latest release
       shell: >
-        curl -s -L -H 'Accept: application/json' {{ rights_app_repo_url }}/releases/latest | grep -Po '"tag_name":"\K[^"]*'
+        curl -x "{{ server_proxy_host }}:{{ server_proxy_port }}" -s -L -H 'Accept: application/json' {{ rights_app_repo_url }}/releases/latest | grep -Po '"tag_name":"\K[^"]*'
       when: rights_app_release == "latest"
       register: latest
       ignore_errors: True
 
     - name: Download latest rights-app release
-      get_url: url={{ rights_app_repo_url }}/releases/download/{{ latest.stdout }}/rights-app-dist.zip dest={{ rights_app_dest }}
+      get_url: url={{ rights_app_repo_url }}/releases/download/{{ latest.stdout }}/rights-app-dist.zip dest={{ rights_app_dest }} validate_certs=no
+      environment:
+        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
       when: latest.rc == 0
 
     - name: Download rights-app release
-      get_url: url={{ rights_app_repo_url }}/releases/download/{{ rights_app_release }}/rights-app-dist.zip dest={{ rights_app_dest }}
+      get_url: url={{ rights_app_repo_url }}/releases/download/{{ rights_app_release }}/rights-app-dist.zip dest={{ rights_app_dest }} validate_certs=no
+      environment:
+        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
       when: latest is undefined
 
     - name: Extract rights-app
@@ -46,8 +58,8 @@
       shell: cat "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID" | xargs kill
       when: pid.stat.exists
 
-    - name: Start rights-app
-      shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }}
+    - name: Start rights-app with proxy configuration
+      shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dhttp.proxyHost={{ server_proxy_host }} -Dhttp.proxyPort={{ server_proxy_port }} -Dhttps.proxyHost={{ server_proxy_host }} -Dhttps.proxyPort={{ server_proxy_port }}
 
     - name: Wait for rights-app
       wait_for: port={{ rights_app_port }} delay=5
