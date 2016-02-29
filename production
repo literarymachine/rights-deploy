@@ -12,7 +12,9 @@ rights_app_dest="{{ ansible_env.HOME }}"
 rights-prod.rightsstatements.org
 
 [site:vars]
-rights_site_server=rightsstatements.github.io
+rights_site_repo_url=https://github.com/literarymachine/rightsstatements.github.io.git
+rights_site_build_branch=pages-production
+rights_site_dest="{{ ansible_env.HOME }}/site"
 
 [proxy]
 rights-prod.rightsstatements.org
