@@ -1,6 +1,6 @@
 # Ansible playbooks for rightsstatements.org deployment
 
-Please refer to the inventory files to see default variable settings.
+Please refer to the inventory files to see default variable settings. Note that currently `server_proxy_host` and `server_proxy_port` in `vars.yml` are mandatory, the proxy must support HTTP and HTTPS.
 
 ## rights-app
 rights-app is retrieved as a binary from the GitHub releases at `rights_app_repo_url`. It can be deployed by running
