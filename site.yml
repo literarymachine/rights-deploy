@@ -1,0 +1,31 @@
+---
+- hosts: site
+  tasks:
+
+    - name: Install Apache web server
+      apt: pkg=apache2 state=installed update_cache=true
+      sudo: yes
+
+    - name: Configure Apache port
+      lineinfile: dest=/etc/apache2/ports.conf line="Listen {{ rights_site_port }}"
+      sudo: yes
+
+    - name: Checkout site from GitHub
+      git: repo={{ rights_site_repo_url }} dest={{ rights_site_dest }} version={{ rights_site_build_branch }} update=yes
+
+    - name: create virtual host file
+      template: src=templates/site-vhost.conf dest=/etc/apache2/sites-available/{{ rights_site_vhost }}.conf
+      sudo: yes
+
+    - name: a2ensite {{ rights_site_vhost }}
+      command: a2ensite {{ rights_site_vhost }}
+      sudo: yes
+
+    - name: a2dissite 000-default
+      command: a2dissite 000-default
+      sudo: yes
+
+    - name: reload apache2
+      service: name=apache2 state=reloaded
+      sudo: yes
+

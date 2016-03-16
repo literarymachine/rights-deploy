@@ -23,27 +23,21 @@
         - proxy_balancer
         - proxy_connect
         - proxy_html
+        - xml2enc
       sudo: yes
-      notify:
-        - restart apache2
 
     - name: create virtual host file
-      template: src=templates/virtualhost.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
+      template: src=templates/proxy-vhost.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
       sudo: yes
 
     - name: a2ensite {{ proxy_vhost }}
       command: a2ensite {{ proxy_vhost }}
       sudo: yes
-      notify:
-        - restart apache2
 
     - name: a2dissite 000-default
       command: a2dissite 000-default
       sudo: yes
-      notify:
-        - restart apache2
 
-  handlers:
-    - name: restart apache2
-      service: name=apache2 state=restarted
-    
+    - name: reload apache2
+      service: name=apache2 state=reloaded
+      sudo: yes
