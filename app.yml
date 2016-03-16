@@ -4,7 +4,7 @@
     - vars.yml
   tasks:
     - name: Install Oracle Java Repo Installer Repository
-      apt_repository: repo=ppa:webupd8team/java update-cache=yes 
+      apt_repository: repo=ppa:webupd8team/java update-cache=yes
       environment:
         http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
         https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
@@ -15,7 +15,7 @@
       shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
       sudo: yes
       when: javarepo.changed
-  
+
     - name: Install Oracle Java 8
       apt: pkg=oracle-java8-installer state=installed
       environment:
@@ -60,6 +60,8 @@
 
     - name: Start rights-app with proxy configuration
       shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dhttp.proxyHost={{ server_proxy_host }} -Dhttp.proxyPort={{ server_proxy_port }} -Dhttps.proxyHost={{ server_proxy_host }} -Dhttps.proxyPort={{ server_proxy_port }}
+      async: 45
+      poll: 0
 
     - name: Wait for rights-app
       wait_for: port={{ rights_app_port }} delay=5
