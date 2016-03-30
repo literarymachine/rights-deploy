@@ -12,10 +12,10 @@ rights_app_dest="{{ ansible_env.HOME }}"
 rights-stg.rightsstatements.org
 
 [site:vars]
-rights_site_server=localhost
-rights_site_port=8080
+rights_site_server=rightsstatements.github.io
+rights_site_port=80
 rights_site_repo_url=https://github.com/rightsstatements/rightsstatements.github.io.git
-rights_site_build_branch=develop-pages
+rights_site_build_branch=master-pages
 rights_site_dest="{{ ansible_env.HOME }}/site"
 rights_site_vhost=rights-site
 
