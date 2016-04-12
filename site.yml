@@ -1,5 +1,7 @@
 ---
 - hosts: site
+  vars_files:
+    - vars.yml
   tasks:
 
     - name: Install Apache web server
@@ -12,6 +14,9 @@
 
     - name: Checkout site from GitHub
       git: repo={{ rights_site_repo_url }} dest={{ rights_site_dest }} version={{ rights_site_build_branch }} update=yes
+      environment:
+        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
 
     - name: create virtual host file
       template: src=templates/site-vhost.conf dest=/etc/apache2/sites-available/{{ rights_site_vhost }}.conf
