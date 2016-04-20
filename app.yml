@@ -59,10 +59,9 @@
       when: pid.stat.exists
 
     - name: Start rights-app with proxy configuration
-      shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dhttp.proxyHost={{ server_proxy_host }} -Dhttp.proxyPort={{ server_proxy_port }} -Dhttps.proxyHost={{ server_proxy_host }} -Dhttps.proxyPort={{ server_proxy_port }}
+      shell: cd "{{ rights_app_dest }}/rights-app-dist/" && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dhttp.proxyHost={{ server_proxy_host }} -Dhttp.proxyPort={{ server_proxy_port }} -Dhttps.proxyHost={{ server_proxy_host }} -Dhttps.proxyPort={{ server_proxy_port }} -Dsource.site.git.branch={{ rights_site_build_branch }}
       async: 45
       poll: 0
 
     - name: Wait for rights-app
       wait_for: port={{ rights_app_port }} delay=5
-
