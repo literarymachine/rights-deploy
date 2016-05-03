@@ -1,5 +1,5 @@
 [app]
-rights-prod.rightsstatements.org
+192.168.33.10
 
 [app:vars]
 rights_app_server=localhost
@@ -8,23 +8,23 @@ rights_app_repo_url=https://github.com/rightsstatements/rights-app
 rights_app_dest="{{ ansible_env.HOME }}"
 
 [site]
-rights-prod.rightsstatements.org
+192.168.33.10
 
 [site:vars]
 rights_site_server=localhost
 rights_site_port=8080
 rights_site_repo_url=https://github.com/rightsstatements/rightsstatements.github.io.git
-rights_site_build_branch=origin/production-pages
+rights_site_build_branch=origin/develop-pages
 rights_site_dest="{{ ansible_env.HOME }}/site"
 rights_site_vhost=rights-site
 
 [proxy]
-rights-prod.rightsstatements.org
+192.168.33.10
 
 [proxy:vars]
 proxy_vhost=rights-proxy
 
-[conostix:children]
+[noproxy:children]
 app
 site
 proxy

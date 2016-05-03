@@ -1,0 +1,5 @@
+---
+- name: Install Apache web server
+  apt: pkg=apache2 state=installed update_cache=true
+  environment: "{{ proxy_env }}"
+  sudo: yes

@@ -1,0 +1,6 @@
+---
+- hosts: app
+  roles:
+    - java
+  tasks:
+    - include: roles/app/tasks/restart.yml

@@ -1,36 +1,32 @@
 ---
 - hosts: site
-  vars_files:
-    - vars.yml
+  roles:
+    - apache
   tasks:
-
-    - name: Install Apache web server
-      apt: pkg=apache2 state=installed update_cache=true
-      sudo: yes
-
     - name: Configure Apache port
       lineinfile: dest=/etc/apache2/ports.conf line="Listen {{ rights_site_port }}"
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: Checkout site from GitHub
-      git: repo={{ rights_site_repo_url }} dest={{ rights_site_dest }} version={{ rights_site_build_branch }} update=yes
-      environment:
-        http_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
-        https_proxy: "{{ server_proxy_host }}:{{ server_proxy_port }}"
+      git: repo="{{ rights_site_repo_url }}" dest="{{ rights_site_dest }}" version="{{ rights_site_build_branch }}" update=yes
+      environment: "{{ proxy_env }}"
 
     - name: create virtual host file
       template: src=templates/site-vhost.conf dest=/etc/apache2/sites-available/{{ rights_site_vhost }}.conf
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: a2ensite {{ rights_site_vhost }}
       command: a2ensite {{ rights_site_vhost }}
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: a2dissite 000-default
       command: a2dissite 000-default
+      notify:
+        - reload apache2
       sudo: yes
-
-    - name: reload apache2
-      service: name=apache2 state=reloaded
-      sudo: yes
-

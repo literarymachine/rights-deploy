@@ -5,17 +5,16 @@ rights-stg.rightsstatements.org
 rights_app_server=localhost
 rights_app_port=9000
 rights_app_repo_url=https://github.com/rightsstatements/rights-app
-rights_app_release=latest
 rights_app_dest="{{ ansible_env.HOME }}"
 
 [site]
 rights-stg.rightsstatements.org
 
 [site:vars]
-rights_site_server=rightsstatements.github.io
-rights_site_port=80
+rights_site_server=localhost
+rights_site_port=8080
 rights_site_repo_url=https://github.com/rightsstatements/rightsstatements.github.io.git
-rights_site_build_branch=master-pages
+rights_site_build_branch=origin/master-pages
 rights_site_dest="{{ ansible_env.HOME }}/site"
 rights_site_vhost=rights-site
 
@@ -24,3 +23,8 @@ rights-stg.rightsstatements.org
 
 [proxy:vars]
 proxy_vhost=rights-proxy
+
+[conostix:children]
+app
+site
+proxy

@@ -1,0 +1,20 @@
+---
+  - stat: path="{{ rights_app_dest }}/rights-app-dist/RUNNING_PID"
+    register: pid
+
+  - name: Stop rights-app
+    shell: cat "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID" | xargs kill || rm "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID"
+    when: pid.stat.exists
+
+  - name: Start rights-app
+    shell: >
+      if [ -n "$http_proxy" ]; then host="${http_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=${host%:*} -Dhttp.proxyPort=${port%/*}"; fi
+      && if [ -n "$https_proxy" ]; then host="${https_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttps.proxyHost=${host%:*} -Dhttps.proxyPort=${port%/*}"; fi
+      && cd "{{ rights_app_dest }}/rights-app-dist/"
+      && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dsource.site.git.branch={{ rights_site_build_branch }}
+    environment: "{{ proxy_env }}"
+    async: 45
+    poll: 0
+
+  - name: Wait for rights-app
+    wait_for: port={{ rights_app_port }} delay=5
