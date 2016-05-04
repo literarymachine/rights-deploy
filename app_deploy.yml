@@ -2,7 +2,7 @@
 - hosts: app
   roles:
     - common
-    - java
+    #- java
   tasks:
 
     - name: Install unzip

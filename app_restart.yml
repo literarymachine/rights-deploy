@@ -2,6 +2,6 @@
 - hosts: app
   roles:
     - common
-    - java
+    #- java
   tasks:
     - include: roles/app/tasks/restart.yml
