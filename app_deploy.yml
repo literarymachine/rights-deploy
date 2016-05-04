@@ -5,16 +5,6 @@
     - java
   tasks:
 
-    - name: Test proxy configuration
-      shell: >
-        if [ -n "$http_proxy" ]; then host="${http_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=${host%:*} -Dhttp.proxyPort=${port%/*}"; fi
-        && if [ -n "$https_proxy" ]; then host="${https_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttps.proxyHost=${host%:*} -Dhttps.proxyPort=${port%/*}"; fi
-        && echo $JAVA_OPTS
-      environment: "{{ proxy_env }}"
-      register: proxy
-
-    - debug: var=proxy.stdout_lines
-
     - name: Install unzip
       apt: pkg=unzip state=installed
       environment: "{{ proxy_env }}"

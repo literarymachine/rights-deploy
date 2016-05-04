@@ -1,4 +1,15 @@
 ---
+
+  - name: Test proxy configuration
+    shell: >
+      if [ -n "$http_proxy" ]; then host="${http_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=${host%:*} -Dhttp.proxyPort=${port%/*}"; fi
+      && if [ -n "$https_proxy" ]; then host="${https_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttps.proxyHost=${host%:*} -Dhttps.proxyPort=${port%/*}"; fi
+      && echo $JAVA_OPTS
+    environment: "{{ proxy_env }}"
+    register: proxy
+
+  - debug: var=proxy.stdout_lines
+
   - stat: path="{{ rights_app_dest }}/rights-app-dist/RUNNING_PID"
     register: pid
     sudo: yes
@@ -15,7 +26,7 @@
       if [ -n "$http_proxy" ]; then host="${http_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=${host%:*} -Dhttp.proxyPort=${port%/*}"; fi
       && if [ -n "$https_proxy" ]; then host="${https_proxy#http://}"; port="${host#*:}"; JAVA_OPTS="$JAVA_OPTS -Dhttps.proxyHost=${host%:*} -Dhttps.proxyPort=${port%/*}"; fi
       && cd "{{ rights_app_dest }}/rights-app-dist/"
-      && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dsource.site.git.branch={{ rights_site_build_branch }}
+      && screen -S rights-app -d -m bin/rights-app -Dhttp.port={{ rights_app_port }} -Dsource.site.git.branch={{ rights_site_build_branch }} `echo $JAVA_OPTS`
     environment: "{{ proxy_env }}"
     async: 45
     poll: 0
