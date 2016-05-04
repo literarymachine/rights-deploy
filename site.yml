@@ -1,6 +1,7 @@
 ---
 - hosts: site
   roles:
+    - common
     - apache
   tasks:
     - name: Configure Apache port
@@ -12,6 +13,8 @@
     - name: Checkout site from GitHub
       git: repo="{{ rights_site_repo_url }}" dest="{{ rights_site_dest }}" version="{{ rights_site_build_branch }}" update=yes
       environment: "{{ proxy_env }}"
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
 
     - name: create virtual host file
       template: src=templates/site-vhost.conf dest=/etc/apache2/sites-available/{{ rights_site_vhost }}.conf
@@ -30,3 +33,6 @@
       notify:
         - reload apache2
       sudo: yes
+
+    - name: Wait for rights-site
+      wait_for: port={{ rights_site_port }} delay=5

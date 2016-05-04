@@ -1,10 +1,14 @@
 ---
   - stat: path="{{ rights_app_dest }}/rights-app-dist/RUNNING_PID"
     register: pid
+    sudo: yes
+    sudo_user: "{{ deployment_user }}"
 
   - name: Stop rights-app
     shell: cat "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID" | xargs kill || rm "{{ rights_app_dest }}/rights-app-dist/RUNNING_PID"
     when: pid.stat.exists
+    sudo: yes
+    sudo_user: "{{ deployment_user }}"
 
   - name: Start rights-app
     shell: >
@@ -15,6 +19,8 @@
     environment: "{{ proxy_env }}"
     async: 45
     poll: 0
+    sudo: yes
+    sudo_user: "{{ deployment_user }}"
 
   - name: Wait for rights-app
     wait_for: port={{ rights_app_port }} delay=5

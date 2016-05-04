@@ -1,3 +1,7 @@
+[all:vars]
+deployment_user=rights
+deployment_home=/opt/rights
+
 [app]
 192.168.33.10
 
@@ -5,7 +9,7 @@
 rights_app_server=localhost
 rights_app_port=9000
 rights_app_repo_url=https://github.com/rightsstatements/rights-app
-rights_app_dest="{{ ansible_env.HOME }}"
+rights_app_dest="{{ deployment_home }}/app"
 
 [site]
 192.168.33.10
@@ -15,7 +19,7 @@ rights_site_server=localhost
 rights_site_port=8080
 rights_site_repo_url=https://github.com/rightsstatements/rightsstatements.github.io.git
 rights_site_build_branch=origin/develop-pages
-rights_site_dest="{{ ansible_env.HOME }}/site"
+rights_site_dest="{{ deployment_home }}/site"
 rights_site_vhost=rights-site
 
 [proxy]

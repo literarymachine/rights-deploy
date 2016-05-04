@@ -1,0 +1,3 @@
+---
+- user: name="{{ deployment_user }}" comment="Deployment user for rightsstatements.org" home="{{ deployment_home }}"
+  sudo: yes

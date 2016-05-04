@@ -1,6 +1,7 @@
 ---
 - hosts: proxy
   roles:
+    - common
     - apache
   tasks:
 
