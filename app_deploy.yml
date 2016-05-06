@@ -41,4 +41,22 @@
       sudo: yes
       sudo_user: "{{ deployment_user }}"
 
+    - name: Copy rights-app startup script
+      template: src=templates/startup.sh dest="{{ rights_app_dest }}/rights-app-dist/" mode=755
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - name: Copy rights-app shutdown script
+      template: src=templates/shutdown.sh dest="{{ rights_app_dest }}/rights-app-dist/" mode=755
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - name: Copy rights-app init script
+      template: src=templates/rights-app dest=/etc/init.d/ mode=755
+      sudo: yes
+
+    - name: Enable rights-app init
+      shell: update-rc.d rights-app defaults
+      sudo: yes
+
     - include: roles/app/tasks/restart.yml
