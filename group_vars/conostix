@@ -1,4 +1,6 @@
 ---
+proxy_host: proxy.lc1.conostix.com
+proxy_port: 3128
 proxy_env:
-  http_proxy: http://proxy.lc1.conostix.com:3128
-  https_proxy: http://proxy.lc1.conostix.com:3128
+  http_proxy: http://{{ proxy_host }}:{{ proxy_port}}
+  https_proxy: http://{{ proxy_host }}:{{ proxy_port}}
