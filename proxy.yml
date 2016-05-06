@@ -1,14 +1,13 @@
 ---
 - hosts: proxy
-  vars_files:
-    - vars.yml
+  roles:
+    - common
+    - apache
   tasks:
 
-    - name: Install Apache web server and modules
-      apt: pkg={{item}} state=installed update_cache=true
-      with_items:
-        - apache2
-        - libapache2-mod-proxy-html
+    - name: Install Apache proxy module
+      apt: pkg=libapache2-mod-proxy-html state=installed update_cache=true
+      environment: "{{ proxy_env }}"
       sudo: yes
 
     - name: Enable apache proxy modules
@@ -24,20 +23,30 @@
         - proxy_connect
         - proxy_html
         - xml2enc
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: create virtual host file
       template: src=templates/proxy-vhost.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: a2ensite {{ proxy_vhost }}
       command: a2ensite {{ proxy_vhost }}
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: a2dissite 000-default
       command: a2dissite 000-default
+      notify:
+        - reload apache2
       sudo: yes
 
     - name: reload apache2
       service: name=apache2 state=reloaded
+      notify:
+        - reload apache2
       sudo: yes

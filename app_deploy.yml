@@ -1,0 +1,44 @@
+---
+- hosts: app
+  roles:
+    - common
+    #- java
+  tasks:
+
+    - name: Install unzip
+      apt: pkg=unzip state=installed
+      environment: "{{ proxy_env }}"
+      sudo: yes
+
+    - name: Create app directory
+      file: path={{ rights_app_dest }} state=directory
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - name: Clear rights-app Download
+      file: path="{{ rights_app_dest }}/rights-app-dist.zip" state=absent
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - name: Download rights-app release
+      get_url: url="{{ rights_app_repo_url }}/releases/download/{{ rights_app_release }}/rights-app-dist.zip" "dest={{ rights_app_dest }}/rights-app-dist.zip" validate_certs=no
+      environment: "{{ proxy_env }}"
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - stat: path="{{ rights_app_dest }}/rights-app-dist.zip"
+      register: download
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - fail: msg="Download of {{ rights_app_release }} failed"
+      when: not download.stat.exists
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - name: Extract rights-app
+      shell: cd "{{ rights_app_dest }}" && unzip -o rights-app-dist.zip
+      sudo: yes
+      sudo_user: "{{ deployment_user }}"
+
+    - include: roles/app/tasks/restart.yml

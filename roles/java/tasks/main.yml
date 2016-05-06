@@ -1,0 +1,16 @@
+---
+- name: Install Oracle Java Repo Installer Repository
+  apt_repository: repo=ppa:webupd8team/java update-cache=yes
+  sudo: yes
+  environment: "{{ proxy_env }}"
+  register: javarepo
+
+- name: Wizardry to bypass the Oracle License File prompt
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+  sudo: yes
+  when: javarepo.changed
+
+- name: Install Oracle Java 8
+  apt: pkg=oracle-java8-installer state=installed
+  environment: "{{ proxy_env }}"
+  sudo: yes
