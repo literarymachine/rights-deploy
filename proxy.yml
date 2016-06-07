@@ -5,6 +5,24 @@
     - apache
   tasks:
 
+    - name: Set Apache ServerTokens directive to ProductOnly
+      lineinfile: dest=/etc/apache2/apache2.conf line="ServerTokens Prod"
+      notify:
+        - reload apache2
+      sudo: yes
+
+    - name: Set Apache ServerSignature directive to Off
+      lineinfile: dest=/etc/apache2/apache2.conf line="ServerSignature Off"
+      notify:
+        - reload apache2
+      sudo: yes
+
+    - name: Disable Apache icons alias
+      lineinfile: dest=/etc/apache2/mods-available/alias.conf state=absent regexp="Alias /icons/ \"/usr/share/apache2/icons/\""
+      notify:
+        - reload apache2
+      sudo: yes
+
     - name: Install Apache proxy module
       apt: pkg=libapache2-mod-proxy-html state=installed update_cache=true
       environment: "{{ proxy_env }}"
