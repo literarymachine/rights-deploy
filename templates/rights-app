@@ -13,6 +13,8 @@ APP_DIR={{ rights_app_dest }}/rights-app-dist/
 
 case "$1" in
  start)
+   su {{ deployment_user }} -c $APP_DIR/shutdown.sh
+   sleep 20
    su {{ deployment_user }} -c $APP_DIR/startup.sh
    ;;
  stop)
