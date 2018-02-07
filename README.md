@@ -3,11 +3,11 @@
 Please refer to the inventory files to see default variable settings. Note that all servers in the inventory file must be members of a group that defines a `proxy_env` dict.
 
 ## rights-app
-rights-app is retrieved as a binary from the GitHub releases at `rights_app_repo_url`. It can be deployed by running
+rights-app is retrieved as a binary from the GitHub releases at `rights_app_repo_url`. It can be deployed by running something like the following
 
     $ ansible-playbook -i staging app_deploy.yml --extra-vars "rights_app_release=v1.0.3"
 
-This will download and unzip `rights_app_release` to `rights_app_dest` and run it on `rights_app_port`.
+This will download and unzip `rights_app_release` to `rights_app_dest` and run it on `rights_app_port`. Unless you have a specific reason for doing otherwise, the version used for `rights_app_release` should be the latest release listed on the [rights-app release page](https://github.com/rightsstatements/rights-app/releases).
 
 If you just want to restart the currently deployed release with the current settings, run
 
