@@ -26,3 +26,9 @@ rights-proxy is configured using Apache as a [reverse proxy](http://httpd.apache
     $ ansible-playbook -i staging proxy.yml
 
 This will create an Apache virtual host that listens on port 80 and proxies as described above.
+
+To configure HTTPS, copy certificate, key and chain file to the server and provide their location:
+
+    $ ansible-playbook -i staging proxy.yml --extra-vars "proxy_ssl_cert=/path/to/cert proxy_ssl_key=/path/to/key proxy_ssl_chain=/path/to/chain"
+
+This will create an Apache virtual host that listens on port 443 and proxies as described above. Additionally, non-HTTPS URLs will be rewritten to HTTPS.

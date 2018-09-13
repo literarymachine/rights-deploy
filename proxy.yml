@@ -41,12 +41,21 @@
         - proxy_connect
         - proxy_html
         - xml2enc
+        - ssl
       notify:
         - reload apache2
       sudo: yes
 
     - name: create virtual host file
       template: src=templates/proxy-vhost.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
+      when: (proxy_ssl_cert is not defined) or (proxy_ssl_key is not defined) or (proxy_ssl_chain is not defined)
+      notify:
+        - reload apache2
+      sudo: yes
+
+    - name: create https virtual host file
+      template: src=templates/proxy-vhost-https.conf dest=/etc/apache2/sites-available/{{ proxy_vhost }}.conf
+      when: (proxy_ssl_cert is defined) and (proxy_ssl_key is defined) and (proxy_ssl_chain is defined)
       notify:
         - reload apache2
       sudo: yes
