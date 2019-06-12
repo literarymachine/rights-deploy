@@ -14,7 +14,7 @@ If you just want to restart the currently deployed release with the current sett
     $ ansible-playbook -i staging restart.yml
 
 ## rights-proxy
-rights-proxy is configured using Apache as a [reverse proxy](http://httpd.apache.org/docs/2.2/mod/mod_proxy.html#forwardreverse). `/vocab`, `/data` and `/page` go to the `rights-app`, any other paths go to `netlify`. It can be deployed by running
+rights-proxy is configured using Apache as a [reverse proxy](http://httpd.apache.org/docs/2.2/mod/mod_proxy.html#forwardreverse). `/vocab`, `/data` and `/page` go to the `rights-app`. It can be deployed by running
 
     $ ansible-playbook -i staging proxy.yml
 
