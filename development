@@ -11,17 +11,6 @@ rights_app_port=9000
 rights_app_repo_url=https://github.com/rightsstatements/rights-app
 rights_app_dest="{{ deployment_home }}/app"
 
-[site]
-192.168.33.10
-
-[site:vars]
-rights_site_server=localhost
-rights_site_port=8080
-rights_site_repo_url=https://github.com/rightsstatements/rightsstatements.github.io.git
-rights_site_build_branch=origin/develop-pages
-rights_site_dest="{{ deployment_home }}/site"
-rights_site_vhost=rights-site
-
 [proxy]
 192.168.33.10
 
@@ -30,5 +19,4 @@ proxy_vhost=rights-proxy
 
 [noproxy:children]
 app
-site
 proxy
