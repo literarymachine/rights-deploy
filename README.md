@@ -13,15 +13,8 @@ If you just want to restart the currently deployed release with the current sett
 
     $ ansible-playbook -i staging restart.yml
 
-## rights-site
-rights-site is retrieved as static html from `rights_site_build_branch` of `rights_site_repo_url`. It can be deployed by running
-
-    $ ansible-playbook -i staging site.yml
-
-This will clone the repository to `rights_site_dest` and check out the selected build branch. Apache will be configured to listen on `rights_site_port` and a virtual host will be set up to serve the content.
-
 ## rights-proxy
-rights-proxy is configured using Apache as a [reverse proxy](http://httpd.apache.org/docs/2.2/mod/mod_proxy.html#forwardreverse). `/vocab`, `/data` and `/page` go to the `rights-app`, any other paths go to `rights-site`. It can be deployed by running
+rights-proxy is configured using Apache as a [reverse proxy](http://httpd.apache.org/docs/2.2/mod/mod_proxy.html#forwardreverse). `/vocab`, `/data` and `/page` go to the `rights-app`. It can be deployed by running
 
     $ ansible-playbook -i staging proxy.yml
 
