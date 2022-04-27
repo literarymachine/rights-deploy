@@ -1,0 +1,14 @@
+name: Run continuous integration
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Lint Ansible playbooks
+        uses: ansible/ansible-lint-action@v6

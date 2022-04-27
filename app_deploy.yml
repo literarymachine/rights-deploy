@@ -29,7 +29,7 @@
       ignore_errors: true
 
     - name: Fall back on downloading rights-app locally and uploading via scp
-      include: local_app_download.yml
+      include: roles/app/tasks/local_app_download.yml
       vars:
         rights_app_release_local: "{{ rights_app_release }}"
       when: download_result.failed
