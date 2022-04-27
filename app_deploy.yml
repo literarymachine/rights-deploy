@@ -25,6 +25,14 @@
       sudo: yes
       sudo_user: "{{ deployment_user }}"
       environment: "{{ proxy_env }}"
+      register: download_result
+      ignore_errors: true
+
+    - name: Fall back on downloading rights-app locally and uploading via scp
+      include: local_app_download.yml
+      vars:
+        rights_app_release_local: "{{ rights_app_release }}"
+      when: download_result.failed
 
     - stat: path="{{ rights_app_dest }}/rights-app-dist.zip"
       register: download

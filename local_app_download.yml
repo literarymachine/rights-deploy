@@ -1,0 +1,10 @@
+- name: Clear local download
+  local_action: file path="tmp/rights-app-dist.zip" state=absent
+
+- name: Download rights-app release locally
+  local_action: get_url url="{{ rights_app_repo_url }}/releases/download/{{ rights_app_release_local }}/rights-app-dist.zip" dest="tmp/rights-app-dist.zip"
+
+- name: Upload local rights-app download to server
+  copy: src=tmp/rights-app-dist.zip dest="{{ rights_app_dest }}/rights-app-dist.zip"
+  sudo: yes
+  sudo_user: "{{ deployment_user }}"
