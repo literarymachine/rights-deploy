@@ -3,6 +3,7 @@
   roles:
     - common
     #- java
+
   tasks:
 
     - name: Install unzip
@@ -32,7 +33,7 @@
       include: roles/app/tasks/local_app_download.yml
       vars:
         rights_app_release_local: "{{ rights_app_release }}"
-      when: download_result.failed
+      when: download_result.state == "absent"
 
     - stat: path="{{ rights_app_dest }}/rights-app-dist.zip"
       register: download

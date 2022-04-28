@@ -25,3 +25,22 @@ To configure HTTPS, copy certificate, key and chain file to the server and provi
     $ ansible-playbook -i staging proxy.yml --extra-vars "proxy_ssl_cert=/path/to/cert proxy_ssl_key=/path/to/key proxy_ssl_chain=/path/to/chain"
 
 This will create an Apache virtual host that listens on port 443 and proxies as described above. Additionally, non-HTTPS URLs will be rewritten to HTTPS.
+
+
+## Caveats
+
+These playbooks currently require Ansible 1.9, which is older and less supported. You may want to use an optional virtual environment for use that will also allow you to install its dependencies.
+
+    $ virtualenv venv
+    $ source venv/bin/activate
+    $ pip install -r requirements.txt
+
+If you are still using Python 2.7, you may need to install `virtualenv` first:
+
+    $ pip install virtualenv
+
+To exit out of the virtual environment:
+
+    $ deactivate
+
+There is an [open issue](https://github.com/rightsstatements/rights-deploy/issues/24) to upgrade Ansible to a more recent release.
